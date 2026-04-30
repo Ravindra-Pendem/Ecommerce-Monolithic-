@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.app.ecom.model.User;
+import com.app.ecom.dto.UserRequest;
+import com.app.ecom.dto.UserResponse;
 import com.app.ecom.service.UserService;
 
 @RestController
@@ -22,15 +23,13 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
-	private Long nextId = 1L;
-	
 	@GetMapping
-	public ResponseEntity<List<User>> getAllUsers(){
+	public ResponseEntity<List<UserResponse>> getAllUsers(){
 		return ResponseEntity.ok(userService.fetchAllUsers());
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<User> getUserById(@PathVariable Long id) {
+	public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
 		
 		return userService.fetchUserById(id)
 						 .map(ResponseEntity::ok)
@@ -39,14 +38,13 @@ public class UserController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<String> createUser(@RequestBody User user){
-		user.setId(nextId++);
+	public ResponseEntity<String> createUser(@RequestBody UserRequest user){
 		userService.addUser(user);
 		return ResponseEntity.ok().body("User Created Successfully.");
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<User> updateUser(@PathVariable Long id,@RequestBody User user){
+	public ResponseEntity<UserResponse> updateUser(@PathVariable Long id,@RequestBody UserRequest user){
 		
 		return ResponseEntity.ok(userService.updateUser(id, user));	
 	}
